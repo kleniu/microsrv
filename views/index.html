@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta desc="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello World</title>
+
+    <!-- Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script>
+        $( document ).ready(function() {
+            $('#desc').attr("placeholder", 'Description' );
+        });
+    </script>
+
+</head>
+
+<body>
+    <div class="container" id="container">
+        <h1>Welcome</h1> <!-- Welcome -->
+        <div id="descInput" class="input-group-lg center-block helloInput">
+            <p class="lead" >Enter description text here:</p>
+            <input id="desc" type="text" class="form-control" aria-describedby="sizing-addon1" value="" />
+        </div>
+        <p id="response" class="lead text-center"></p>
+
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Date</th>
+                <th scope="col">Time</th>
+                <th scope="col">Id</th>
+                <th scope="col">Description</th>
+              </tr>
+            </thead>
+            <tbody id="tabeOfRecords">
+            </tbody>
+        </table>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <span><a href="https://en.wikipedia.org/wiki/Animal_testing" target="_blank">Not tested on Animals!</a></span>
+        </div>
+    </footer>
+
+</body>
+
+
+</html>
+
+
+<script>
+
+    	//Submit data when enter key is pressed
+        $('#desc').keydown(function(e) {
+        	var desc = $('#desc').val();
+            if (e.which == 13 && desc.length > 0) { //catch Enter key
+            	//POST request to API to create a new visitor entry in the database
+                $.ajax({
+				  method: "POST",
+				  url: "./api/records",
+				  contentType: "application/json",
+				  data: JSON.stringify({desc: desc })
+				})
+                .done(function(data) {
+                    if(data && data.desc){
+                        if(data._id)
+                            $('#response').html('Added to database ' + data.desc);
+                        else
+                            $('#response').html('Entered ' + data.desc); 
+                    }
+                    else {
+                        $('#response').html(data);
+                    }
+                    $('#descInput').hide();
+                    getdescs();
+                });
+            }
+        });
+
+        //Retrieve all records from the database
+        function getdescs(){
+          $.get("./api/records")
+              .done(function(data) {
+                  if(data.length > 0) {
+                    markup = '';
+                    
+                    console.log(JSON.stringify(data));
+
+                    data.forEach(function(element, index) {
+                      //console.log(JSON.stringify(data[index]));
+                      markup = markup + '<tr><th scope="row">' + (index+1) + 
+                                        '</th><td>' + data[index].date +
+                                        '</td><td>' + data[index].time +
+                                        '</td><td>' + data[index].id + 
+                                        '</td><td>' + data[index].desc + '</td></tr>';
+                    });
+                    
+                    tableBody = $('#tabeOfRecords'); 
+                    tableBody.children().remove(); // empty table
+                    tableBody.append(markup);      // append rows
+                  }
+              });
+          }
+
+          //Call getdescs on page load.
+          getdescs();
+    </script>

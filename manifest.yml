@@ -1,0 +1,5 @@
+---
+applications:
+ - name: microsrv
+   random-route: true
+   memory: 256M

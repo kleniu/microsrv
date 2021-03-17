@@ -1,0 +1,26 @@
+{
+  "name": "microsrv",
+  "main": "server.js",
+  "description": "uS for Watson Assistant integration demo",
+  "version": "0.0.1",
+  "private": false,
+  "engines": {
+    "node": "10.*"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "dependencies": {
+    "@cloudant/cloudant": "^3.0.2",
+    "body-parser": "^1.17.x",
+    "cfenv": "^1.0.x",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.x"
+  },
+  "author": "Robert Kleniewski",
+  "license": "Apache-2.0"
+}
